@@ -3,6 +3,8 @@ var path = require('path');
 var ncp = require('ncp').ncp;
 var async = require('async');
 var merge = require('merge');
+var cp = require('child_process');
+var psTree = require('ps-tree');
 
 var NodeWebkitBrowser = function(baseBrowserDecorator, args) {
   baseBrowserDecorator(this);
@@ -42,6 +44,17 @@ var NodeWebkitBrowser = function(baseBrowserDecorator, args) {
       'exec': ['index.html:write', 'package.json:write', function(callback) {
         process.env.NODE_PATH = searchPaths.join(path.delimiter);
         self._execCommand(self._getCommand(), [STATIC_PATH]);
+        
+        // self._process is defined in self._execCommand()
+        // self._process is the child process of chromedriver2 which is for nodewebkit https://github.com/nwjs/nw.js/wiki/Chromedriver
+        // chromedriver2 is make 3 children processes of self._process
+        // original code only kill self._process without of the 3 children processes, so nodewebkit is still alive and karma can't quit.
+        // it should be kill all process by below code.
+        self._process.kill = function () {
+					psTree(self._process.pid, function (err, children) {
+						cp.spawn('kill', ['-9'].concat(children.map(function (p) {return p.PID})))
+					});
+				}
       }]
     });
   };

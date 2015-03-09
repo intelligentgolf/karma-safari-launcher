@@ -23,7 +23,7 @@
     "ncp": "~0.5.0",
     "async": "~0.2.10",
     "merge": "~1.1.2",
-    "nodewebkit": "^0.8.5"
+    "ps-tree": "0.0.3"
   },
   "peerDependencies": {
     "karma": ">=0.9"
@@ -47,6 +47,10 @@
     {
       "name": "Michal Charemza",
       "email": "michalcharemza@gmail.com"
+    },
+    {
+      "name": "Denny Lim",
+      "email": "hi.iamdeny@gmail.com"
     }
   ]
 }
